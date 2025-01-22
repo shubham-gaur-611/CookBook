@@ -18,4 +18,12 @@ export class CreateReceipeService {
     async findAll(): Promise<Create_Receipe[]>{
         return await this.create_receipeModel.findAll();
     }
+    async findReceipe(id: number): Promise<Create_Receipe>{
+        const oneReceipe = await this.create_receipeModel.findByPk(id);
+        if (!oneReceipe) {
+            throw new NotFoundException(`Receipe with ID ${id} not found`);
+          }
+          return oneReceipe;
+    }
+    
 }

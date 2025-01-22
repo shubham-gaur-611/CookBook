@@ -30,6 +30,9 @@ let CreateReceipeController = class CreateReceipeController {
     async findAll() {
         return await this.createreceipeservices.findAll();
     }
+    async findReceipe(id) {
+        return await this.createreceipeservices.findReceipe(id);
+    }
 };
 exports.CreateReceipeController = CreateReceipeController;
 __decorate([
@@ -50,6 +53,13 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], CreateReceipeController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.Get)(':id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", Promise)
+], CreateReceipeController.prototype, "findReceipe", null);
 exports.CreateReceipeController = CreateReceipeController = __decorate([
     (0, common_1.Controller)('create-receipe'),
     __metadata("design:paramtypes", [create_receipe_service_1.CreateReceipeService])

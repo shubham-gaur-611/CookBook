@@ -39,4 +39,9 @@ export class CreateReceipeController {
   async findAll(): Promise<Create_Receipe[]> {
     return await this.createreceipeservices.findAll();
   }
+
+  @Get(':id')
+  async findReceipe(@Param('id') id: number): Promise<Create_Receipe> {
+    return await this.createreceipeservices.findReceipe(id);
+  }
 }

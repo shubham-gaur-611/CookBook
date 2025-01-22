@@ -5,12 +5,15 @@ import {
   Button,
   AbsoluteCenter,
 } from "@chakra-ui/react";
+import { Toaster, toaster } from "@/components/ui/toaster"
 import { Field } from "@/components/ui/field";
+
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import { endpoints } from "@/config/api";
+
+import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
@@ -38,18 +41,29 @@ export const RegisterPage = () => {
       return response.data;
     },
     onSuccess: () => {
-      navigate("/login");
+      toaster.loading({
+        title: "Registering...",
+        description: "Please wait while we process your registration.",
+        duration: 1000,
+      });
+      setTimeout(()=>toaster.success({
+        title: "Registration Successful",
+        description: "Redirecting to login...",
+      }),2000)
+      setTimeout(()=>navigate("/login"),3000)
     },
   });
 
   const onsubmit = (data: RegisterFormData) => {
-    registerMutation.mutate(data);
+    registerMutation.mutate(data)
   };
 
   const handleNavigate = () => {
     navigate("/login");
   };
   return (
+    <>
+      <Toaster />
     <AbsoluteCenter>
       <Stack gap="4" w="500px">
         <form onSubmit={handleSubmit(onsubmit)}>
@@ -87,6 +101,7 @@ export const RegisterPage = () => {
           </Card.Root>
         </form>
       </Stack>
-    </AbsoluteCenter>
+      </AbsoluteCenter>
+      </>
   );
 };

@@ -28,6 +28,13 @@ let CreateReceipeService = class CreateReceipeService {
     async findAll() {
         return await this.create_receipeModel.findAll();
     }
+    async findReceipe(id) {
+        const oneReceipe = await this.create_receipeModel.findByPk(id);
+        if (!oneReceipe) {
+            throw new common_1.NotFoundException(`Receipe with ID ${id} not found`);
+        }
+        return oneReceipe;
+    }
 };
 exports.CreateReceipeService = CreateReceipeService;
 exports.CreateReceipeService = CreateReceipeService = __decorate([

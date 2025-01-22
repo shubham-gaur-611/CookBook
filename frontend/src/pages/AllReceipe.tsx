@@ -13,12 +13,21 @@ import { endpoints } from "@/config/api";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 import { Navbar } from "../components/custom/Navbar";
 
 export const AllReceipe = () => {
   const { getUser } = useAuth();
   const user = getUser();
+
+  const truncateText = (text: string, wordLimit: number) => {
+    const words = text.split(" ");
+    return words.length > wordLimit
+      ? words.slice(0, wordLimit).join(" ") + " ..."
+      : text;
+  };
+  const navigate = useNavigate();
   const {
     data: receipes,
     isLoading,
@@ -30,6 +39,7 @@ export const AllReceipe = () => {
       return response.data;
     },
   });
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -37,7 +47,12 @@ export const AllReceipe = () => {
   if (isError) {
     return <div>Error loading receipes.</div>;
   }
+
   const pageName = "Receipes";
+  const handleNavigate = (id:any) => {
+    navigate(`/detailedreceipe/${id}`)
+  }
+
   return (
     <>
       <Navbar message={pageName} />
@@ -65,12 +80,16 @@ export const AllReceipe = () => {
                           </Text>
                         </Center>
                         <Card.Title>Ingredients :</Card.Title>
-                        <Card.Description>{item.ingredients}</Card.Description>
+                        <Card.Description>
+                          {truncateText(item.ingredients, 5)}
+                        </Card.Description>
                         <Card.Title>Instruction :</Card.Title>
-                        <Card.Description>{item.instructions}</Card.Description>
+                        <Card.Description>
+                          {truncateText(item.instructions, 5)}
+                        </Card.Description>
                       </Card.Body>
                       <Card.Footer gap="2">
-                        <Button variant="solid">Read More</Button>
+                      <Button onClick={() => handleNavigate(item.id)} variant="solid">Read More</Button>
                       </Card.Footer>
                     </Card.Root>
                   </div>
@@ -93,12 +112,16 @@ export const AllReceipe = () => {
                           </Text>
                         </Center>
                         <Card.Title>Ingredients :</Card.Title>
-                        <Card.Description>{item.ingredients}</Card.Description>
+                        <Card.Description>
+                          {truncateText(item.ingredients, 5)}
+                        </Card.Description>
                         <Card.Title>Instruction :</Card.Title>
-                        <Card.Description>{item.instructions}</Card.Description>
+                        <Card.Description>
+                          {truncateText(item.instructions, 5)}
+                        </Card.Description>
                       </Card.Body>
                       <Card.Footer gap="2">
-                        <Button variant="solid">Read More</Button>
+                      <Button onClick={() => handleNavigate(item.id)} variant="solid">Read More</Button>
                       </Card.Footer>
                     </Card.Root>
                   </div>
