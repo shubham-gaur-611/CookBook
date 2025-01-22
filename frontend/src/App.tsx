@@ -6,6 +6,7 @@ import { RegisterPage } from "./pages/Register";
 import { AllReceipe } from "./pages/AllReceipe";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { PrivateRoute } from "./components/custom/PrivateRoute";
+import { DetailedReceipe } from "./pages/DetailedReceipe";
 const queryClient = new QueryClient();
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path="/register" element={<RegisterPage />}></Route>
           <Route path="/allreceipe" element={<AllReceipe />}></Route>
           <Route path="/" element={<AllReceipe />}></Route>
+          <Route path="/detailedreceipe/:id" element={<DetailedReceipe />}></Route>
           <Route element={<PrivateRoute />}>
             <Route path="/create_receipe" element={<RecipeCreation />}></Route>
           </Route>

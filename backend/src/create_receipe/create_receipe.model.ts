@@ -26,7 +26,7 @@ export class Create_Receipe extends Model<Create_Receipe> {
   instructions: string;
 
   @Column({
-    type: DataType.STRING,
+    type: DataType.STRING(1000),
     allowNull: false,
   })
   ingredients: string;

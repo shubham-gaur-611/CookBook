@@ -19,7 +19,7 @@ module.exports = {
         allowNull:false
       },
       ingredients: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING(1000),
         allowNull:false
       },
       receip_image: {
