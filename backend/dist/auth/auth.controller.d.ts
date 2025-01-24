@@ -13,9 +13,7 @@ export declare class AuthController {
         password: string;
     }): Promise<{
         message: string;
-        user?: {
-            email: string;
-        };
+        user?: string;
         token?: string;
         expiresIn?: number;
     }>;

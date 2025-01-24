@@ -1,6 +1,6 @@
 import { Box, Button, Flex, HStack, Text } from "@chakra-ui/react";
 
-import { useAuth } from "../../hooks/useAuth";
+import { useContextAuth } from "@/context/AuthContext";
 // import { MenuBox } from "./Menu";
 
 import { useNavigate, useLocation } from "react-router-dom";
@@ -13,8 +13,9 @@ interface NavbarProps {
 export const Navbar: React.FC<NavbarProps> = ({ message }) => {
   const location = useLocation();
 
-  const { logout, getUser } = useAuth();
-  const user = getUser();
+  //const { logout, getUser } = useAuth();
+  const { user, logout } = useContextAuth();
+  //const user = getUser();
   const navigate = useNavigate();
 
   const [buttonText, setButtonText] = useState("All Recipes");
@@ -37,6 +38,9 @@ export const Navbar: React.FC<NavbarProps> = ({ message }) => {
   const handleNavigate = () => {
     navigate(navigateUrl);
   };
+  const handleFavoriteNavigate = () => {
+    navigate("/favorite-receipes");
+  };
   return (
     <Box bg="red.500" px={4}>
       <Flex h={16} alignItems="center" justifyContent="space-between">
@@ -49,7 +53,10 @@ export const Navbar: React.FC<NavbarProps> = ({ message }) => {
           {/* <MenuBox /> */}
           <Button onClick={handleNavigate}>{buttonText}</Button>
           {user?.email ? (
-            <Button onClick={logout}>Logout</Button>
+            <>
+              <Button onClick={handleFavoriteNavigate}>Favorite Recepies</Button>
+              <Button onClick={logout}>Logout</Button>
+            </>
           ) : (
             <Button onClick={handleNavigate}>Login</Button>
           )}

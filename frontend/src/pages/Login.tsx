@@ -3,13 +3,13 @@ import { Field } from "@/components/ui/field";
 import { Toaster, toaster } from "@/components/ui/toaster";
 
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
-import { endpoints } from "../config/api";
 
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import { apiCall } from '../config/apicall/apicall'
+import {useContextAuth} from '../context/AuthContext'
 
 interface LoginFormData {
   email: string;
@@ -24,23 +24,20 @@ const schema = yup.object().shape({
 //use yup schema for form validation
 export const LoginPage = () => {
   const navigate = useNavigate();
+  const { login: authLogin } = useContextAuth();
   const {
     register,
     handleSubmit,
     formState: {},
   } = useForm<LoginFormData>({ resolver: yupResolver(schema) });
-  const registerMutation = useMutation({
-    mutationFn: async (data: LoginFormData) => {
-      const response = await axios.post(endpoints.login, data);
-      return response.data;
-    },
+  const registerMutation = useMutation({ 
+    mutationFn: (data: LoginFormData) => apiCall("login", data),
     onSuccess: (data) => {
       toaster.success({
         title: "Login successfully",
         type: "loading",
       });
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
+      authLogin(data.user, data.token, data.expiresIn);
       setTimeout(() => navigate("/allreceipe"), 2000);
     },
     onError: () => {

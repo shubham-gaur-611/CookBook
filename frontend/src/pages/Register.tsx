@@ -9,9 +9,8 @@ import { Toaster, toaster } from "@/components/ui/toaster"
 import { Field } from "@/components/ui/field";
 
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
-import { endpoints } from "@/config/api";
+import { apiCall } from '../config/apicall/apicall'
 
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -36,10 +35,7 @@ export const RegisterPage = () => {
   } = useForm<RegisterFormData>({ resolver: yupResolver(schema) });
 
   const registerMutation = useMutation({
-    mutationFn: async (data: RegisterFormData) => {
-      const response = await axios.post(endpoints.register, data);
-      return response.data;
-    },
+   mutationFn: (data: RegisterFormData) => apiCall("register", data),
     onSuccess: () => {
       toaster.loading({
         title: "Registering...",

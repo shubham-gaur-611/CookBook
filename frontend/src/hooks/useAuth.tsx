@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 interface User {
   id: number;
   email: string;
-  // Add other user properties as needed
 }
 
 export const useAuth = () => {
