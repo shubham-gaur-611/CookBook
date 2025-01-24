@@ -10,12 +10,11 @@ import {
   GridItem,
 } from "@chakra-ui/react";
 
-import { endpoints } from "@/config/api";
-import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 
 import { Navbar } from "@/components/custom/Navbar";
+import { apiCall } from '../config/apicall/apicall'
 
 
 interface Recipe {
@@ -35,13 +34,7 @@ export const DetailedReceipe = () => {
     isError,
   } = useQuery<Recipe>({
     queryKey: ["receipe", id],
-    queryFn: async () => {
-      if (!id) {
-        throw new Error("ID is missing");
-      }
-      const response = await axios.get<Recipe>(endpoints.receipe_id(id));
-      return response.data;
-    },
+    queryFn:()=>apiCall('receipe_id',"cd",id),
   });
 
   if (isLoading) {

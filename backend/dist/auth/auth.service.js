@@ -40,7 +40,7 @@ let AuthService = class AuthService {
             const token = jwt.sign({ email }, process.env.JWT_SECRET || 'your-secret-key', { expiresIn: `${expiresIn}s` });
             return {
                 message: 'Login successful',
-                user: { email: user.email },
+                user: user.email,
                 token: token,
                 expiresIn: expiresIn
             };

@@ -21,7 +21,7 @@ export const storage = diskStorage({
 });
 
 export const fileFilter = (req, file, callback) => {
-  if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
+  if (!file.originalname.match(/\.(jpg|jpeg|png|gif|svg)$/)) {
     return callback(new Error('Only image files are allowed!'), false);
   }
   callback(null, true);

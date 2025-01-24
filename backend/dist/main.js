@@ -8,14 +8,13 @@ async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
     app.use('/protected', new auth_middleware_1.AuthMiddleware().use);
     const imagesPath = (0, path_1.join)(__dirname, '..', 'src', 'assets', 'receipe_images');
-    console.log('Serving images from:', imagesPath);
     app.useStaticAssets(imagesPath, {
         prefix: '/assets/receipe_images',
     });
     app.enableCors({
-        origin: '*',
-        methods: '*',
-        allowedHeaders: '*',
+        origin: 'http://localhost:5173',
+        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+        allowedHeaders: ['Content-Type', 'Accept', 'Authorization'],
         credentials: true,
     });
     await app.listen(3000);

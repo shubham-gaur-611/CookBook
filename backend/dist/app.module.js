@@ -13,6 +13,7 @@ const app_service_1 = require("./app.service");
 const auth_module_1 = require("./auth/auth.module");
 const database_module_1 = require("./database/database.module");
 const create_receipe_module_1 = require("./create_receipe/create_receipe.module");
+const favorite_receipe_module_1 = require("./favorite_receipe/favorite_receipe.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -22,6 +23,7 @@ exports.AppModule = AppModule = __decorate([
             database_module_1.DatabaseModule,
             auth_module_1.AuthModule,
             create_receipe_module_1.CreateReceipeModule,
+            favorite_receipe_module_1.FavoriteReceipeModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],
