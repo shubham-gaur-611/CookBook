@@ -7,11 +7,14 @@ import {
   Grid,
   HStack,
   Center,
+  Icon,
 } from "@chakra-ui/react";
+import { Toaster, toaster } from "@/components/ui/toaster";
 import { useNavigate } from "react-router-dom";
 import { useContextAuth } from "@/context/AuthContext";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient, UseQueryResult } from "@tanstack/react-query";
 import { apiCall } from "@/config/apicall/apicall";
+import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 
 interface Recipe {
   id: string;
@@ -27,93 +30,145 @@ interface FilteredRecipesListProps {
   recipes: Recipe[];
   searchQuery: string;
   userEmail: string;
+  favrecipes: Recipe[];
+  refetch:UseQueryResult['refetch']
 }
+
 interface FavoriteReceipe {
   receip_id: string;
   favorite_by: string;
 }
+
 export const FilteredRecipesList: React.FC<FilteredRecipesListProps> = ({
   recipes,
+  favrecipes,
   searchQuery,
   userEmail,
+  refetch
 }) => {
   const navigate = useNavigate();
   const { user } = useContextAuth();
+  const queryClient = useQueryClient();
 
-  // const truncateText = (text: string, wordLimit: number) => {
-  //   const words = text.split(" ");
-  //   return words.length > wordLimit
-  //     ? words.slice(0, wordLimit).join(" ") + " ..."
-  //     : text;
-  // };
-
-  const filteredReceipes = recipes.filter((item) => {
+  const filteredRecipes = recipes.filter((item) => {
     const matchesSearch = item.receip_name
       .toLowerCase()
       .includes(searchQuery.toLowerCase());
     const isVisible =
-      item.private_receipe !== "on" || item.posted_by === userEmail;
+      !item.private_receipe || item.private_receipe !== "on" || item.posted_by === userEmail;
     return matchesSearch && isVisible;
   });
 
-  const handleNavigate = (id: any) => {
+  const handleNavigate = (id: string) => {
     navigate(`/detailedreceipe/${id}`);
+  };
+
+  const isFavorite = (recipeId: string): boolean => {
+    if (!user) return false;
+    return favrecipes?.some((favRecipe) => favRecipe.id === recipeId) || false;
   };
 
   const favoriteMutation = useMutation({
     mutationFn: (data: FavoriteReceipe) => apiCall("favorite_receipes", data),
-    onSuccess: (data) => {
-      console.log(data);
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["recipes", user?.email, "favRecipe"] });
+      refetch()
+      toaster.success({
+        title: "Added to favorites successfully",
+        type: "success",
+      });
     },
-    onError: (err) => {
-      console.log(err);
+    onError: () => {
+      toaster.error({
+        title: "Failed to add to favorites",
+        description: "Please try again later",
+        type: "error",
+      });
     },
   });
 
-  const handleFavorite = (id: any) => {
-    if (user?.email) {
-      let result: FavoriteReceipe = { receip_id: id, favorite_by: user?.email };
-      favoriteMutation.mutate(result);
+  const deleteFavoriteMutation = useMutation({
+    mutationFn: (id: string) =>
+      apiCall("unfavorite_receipes", null, id, "delete"),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["recipes", user?.email, "favRecipes"] });
+      refetch()
+      toaster.success({
+        title: "Removed from favorites",
+        type: "success",
+      });
+    },
+    onError: () => {
+      toaster.error({
+        title: "Failed to remove from favorites",
+        description: "Please try again later",
+        type: "error",
+      });
+    },
+  });
+
+  const handleFavoriteClick = (recipeId: string) => {
+    if (!user) {
+      toaster.error({
+        title: "Please login",
+        description: "You need to be logged in to add favorites",
+        type: "error",
+      });
+      return;
+    }
+
+    if (isFavorite(recipeId)) {
+      deleteFavoriteMutation.mutate(recipeId);
     } else {
-      console.error("User is not logged in!");
+      favoriteMutation.mutate({
+        receip_id: recipeId,
+        favorite_by: user.email,
+      });
     }
   };
 
   return (
-    <Box
-      borderWidth="1px"
-      borderRadius="lg"
-      overflow="hidden"
-      boxShadow="md"
-      bg="gray.600"
-      width="100%"
-    >
-      <Grid templateColumns="repeat(4, 1fr)" gap={6} p={4}>
-        {filteredReceipes.length > 0 ? (
-          filteredReceipes.map((item) => (
-            <>
+    <>
+      <Toaster />
+      <Box
+        borderWidth="1px"
+        borderRadius="lg"
+        overflow="hidden"
+        boxShadow="md"
+        bg="#f3f3f3"
+        width="100%"
+      >
+        <Grid templateColumns="repeat(4, 1fr)" gap={6} p={4}>
+          {filteredRecipes.length > 0 ? (
+            filteredRecipes.map((item) => (
               <Box
-                 key={item.id}
+                key={item.id}
                 borderWidth="1px"
                 borderRadius="lg"
                 overflow="hidden"
                 boxShadow="md"
-                bg="whitesmoke"
-                maxW="300px"
+                bg={isFavorite(item.id) ? "orange.100" : "whitesmoke"}
+                maxW="250px"
                 maxH="fit-content"
                 _hover={{ transform: "scale(1.05)", transition: "0.3s" }}
                 shadow="lg"
+                position="relative"
               >
                 <Center>
                   <Image
                     src={`http://localhost:3000${item.receip_image}`}
-                    alt="{title}"
+                    alt={item.receip_name}
                     borderRadius="md"
                     p={4}
                   />
                 </Center>
                 <Center>
-                  <Text fontWeight="bold" color="gray.600" fontSize="lg" mb={2}>
+                  <Text
+                    fontWeight="bold"
+                    color="gray.600"
+                    fontSize="lg"
+                    mb={2}
+                  >
                     {item.receip_name}
                   </Text>
                 </Center>
@@ -121,34 +176,36 @@ export const FilteredRecipesList: React.FC<FilteredRecipesListProps> = ({
                 <HStack
                   justify="space-between"
                   p={4}
-                  bg="gray.700"
                   borderTop="1px solid"
-                  borderColor="gray.600"
+                  borderColor="gray.200"
                 >
                   <Button
                     size="sm"
-                    colorScheme="orange"
                     onClick={() => handleNavigate(item.id)}
+                    bg="#445597"
                   >
                     Read More
                   </Button>
-                  <Button
-                    size="sm"
-                    colorScheme="orange"
-                    onClick={() => handleFavorite(item.id)}
-                  >
-                    Favorite
-                  </Button>
+                  <Icon
+                    as={isFavorite(item.id) ? AiFillHeart : AiOutlineHeart}
+                    color="red.500"
+                    boxSize={6}
+                    cursor="pointer"
+                    onClick={() => handleFavoriteClick(item.id)}
+                    _hover={{ transform: "scale(1.1)" }}
+                    transition="transform 0.2s"
+                  />
+                 
                 </HStack>
               </Box>
-            </>
-          ))
-        ) : (
-          <Text color="gray.400" fontSize="lg" textAlign="center">
-            No recipes available.
-          </Text>
-        )}
-      </Grid>
-    </Box>
+            ))
+          ) : (
+            <Text color="gray.400" fontSize="lg" textAlign="center">
+              No recipes available.
+            </Text>
+          )}
+        </Grid>
+      </Box>
+    </>
   );
 };

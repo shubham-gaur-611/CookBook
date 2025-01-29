@@ -1,10 +1,19 @@
-import { Box, Button, Flex, HStack, Text } from "@chakra-ui/react";
+//new navbar
 
+
+import { 
+  Box, 
+  Button, 
+  Center, 
+  Flex, 
+  HStack, 
+  Text
+} from "@chakra-ui/react";
+import { useColorModeValue } from "../ui/color-mode";
 import { useContextAuth } from "@/context/AuthContext";
-// import { MenuBox } from "./Menu";
-
 import { useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { FaUtensils } from "react-icons/fa";
 
 interface NavbarProps {
   message: string;
@@ -12,10 +21,7 @@ interface NavbarProps {
 
 export const Navbar: React.FC<NavbarProps> = ({ message }) => {
   const location = useLocation();
-
-  //const { logout, getUser } = useAuth();
   const { user, logout } = useContextAuth();
-  //const user = getUser();
   const navigate = useNavigate();
 
   const [buttonText, setButtonText] = useState("All Recipes");
@@ -23,7 +29,7 @@ export const Navbar: React.FC<NavbarProps> = ({ message }) => {
 
   useEffect(() => {
     if (location.pathname === "/allreceipe" || location.pathname === "/") {
-      setButtonText("Create Receipes");
+      setButtonText("Create Recipes");
       if (user?.email) {
         setNavigateUrl("/create_receipe");
       } else {
@@ -33,7 +39,7 @@ export const Navbar: React.FC<NavbarProps> = ({ message }) => {
       setButtonText("All Recipes");
       setNavigateUrl("/allreceipe");
     }
-  }, [location.pathname]);
+  }, [location.pathname, user?.email]);
 
   const handleNavigate = () => {
     navigate(navigateUrl);
@@ -41,27 +47,99 @@ export const Navbar: React.FC<NavbarProps> = ({ message }) => {
   const handleFavoriteNavigate = () => {
     navigate("/favorite-receipes");
   };
+  const handleUserNavigate = () => {
+    navigate("/user-receipes");
+  };
+
   return (
-    <Box bg="red.500" px={4}>
-      <Flex h={16} alignItems="center" justifyContent="space-between">
-        <Flex flex={1} justifyContent="center">
-          <Text fontSize="2xl" fontWeight="bold" color="white">
+    <Box
+      position="fixed"
+      top="0"
+      width="100%"
+      zIndex="1000"
+      bg={useColorModeValue('white', 'gray.800')}
+      boxShadow="0 2px 4px rgba(0,0,0,0.1)"
+      borderBottom="1px"
+      borderColor={useColorModeValue('gray.200', 'gray.700')}
+    >
+      <Flex 
+        maxW="1400px" 
+        mx="auto" 
+        px={6} 
+        h={16} 
+        alignItems="center" 
+        justifyContent="space-between"
+      >
+        <Center>
+          <Flex alignItems="center" gap={2}>
+            <FaUtensils size={24} />
+            <Text
+              fontSize="2xl"
+              fontWeight="bold"
+              color={useColorModeValue('blue.500', 'blue.300')}
+            >
+              CookBook
+            </Text>
+          </Flex>
+        </Center>
+
+        <Center flex={1} mx={8}>
+          <Text
+            fontSize="xl"
+            fontWeight="bold"
+            textAlign="center"
+            color={useColorModeValue('gray.700', 'white')}
+          >
             {message}
           </Text>
-        </Flex>
-        <HStack alignItems="center" display={{ base: "none", md: "flex" }}>
-          {/* <MenuBox /> */}
-          <Button onClick={handleNavigate}>{buttonText}</Button>
+        </Center>
+
+        <HStack>
+          <Button
+            
+            colorScheme="teal"
+            onClick={handleNavigate}
+          >
+            {buttonText}
+          </Button>
+
           {user?.email ? (
             <>
-              <Button onClick={handleFavoriteNavigate}>Favorite Recepies</Button>
-              <Button onClick={logout}>Logout</Button>
+              <Button
+                
+                colorScheme="pink"
+                onClick={handleFavoriteNavigate}
+              >
+                Favorite Recipes
+              </Button>
+
+              <Button
+                
+                colorScheme="purple"
+                onClick={handleUserNavigate}
+              >
+                User Recipes
+              </Button>
+              <Button
+               bg={useColorModeValue('blue.500', 'blue.300')}
+                colorScheme="red"
+                onClick={logout}
+              >
+                Logout
+              </Button>
             </>
           ) : (
-            <Button onClick={handleNavigate}>Login</Button>
+            <Button
+              bg={useColorModeValue('blue.500', 'blue.300')}
+              colorScheme="blue"
+              onClick={handleNavigate}
+            >
+              Login
+            </Button>
           )}
         </HStack>
       </Flex>
+     
     </Box>
   );
 };

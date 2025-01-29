@@ -29,13 +29,12 @@ let FavoriteReceipeService = class FavoriteReceipeService {
     async findReceipes(id) {
         const favReceipes = await this.favorite_receipeModel.findAll({
             where: { favorite_by: id },
-            attributes: ['receip_id'],
+            include: [{
+                    model: this.create_receipeModel,
+                    required: true
+                }]
         });
-        const receipIds = favReceipes.map((fav) => fav.receip_id);
-        const recipes = await this.create_receipeModel.findAll({
-            where: { id: receipIds },
-        });
-        return recipes;
+        return favReceipes.map(fav => fav.recipe);
     }
     async deleteReceipe(id, email) {
         const receipe = await this.favorite_receipeModel.findOne({

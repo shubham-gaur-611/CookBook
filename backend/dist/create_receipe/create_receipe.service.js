@@ -16,17 +16,15 @@ exports.CreateReceipeService = void 0;
 const common_1 = require("@nestjs/common");
 const sequelize_1 = require("@nestjs/sequelize");
 const create_receipe_model_1 = require("./create_receipe.model");
-const dotenv = require("dotenv");
-dotenv.config();
 let CreateReceipeService = class CreateReceipeService {
     constructor(create_receipeModel) {
         this.create_receipeModel = create_receipeModel;
     }
-    async create(data) {
-        return await this.create_receipeModel.create(data);
+    create(data) {
+        return this.create_receipeModel.create(data);
     }
-    async findAll() {
-        return await this.create_receipeModel.findAll();
+    findAll() {
+        return this.create_receipeModel.findAll();
     }
     async findReceipe(id) {
         const oneReceipe = await this.create_receipeModel.findByPk(id);
@@ -34,6 +32,25 @@ let CreateReceipeService = class CreateReceipeService {
             throw new common_1.NotFoundException(`Receipe with ID ${id} not found`);
         }
         return oneReceipe;
+    }
+    async findUserReceipe(id) {
+        const userReceipe = await this.create_receipeModel.findAll({
+            where: { posted_by: id }
+        });
+        if (!userReceipe) {
+            throw new common_1.NotFoundException(`Receipe with ID ${id} not found`);
+        }
+        return userReceipe;
+    }
+    async deleteReceipe(id, email) {
+        const receipe = await this.create_receipeModel.findOne({
+            where: { id: id, posted_by: email }
+        });
+        if (!receipe) {
+            throw new common_1.NotFoundException(`Favorite receipe with ID ${id} not found`);
+        }
+        await receipe.destroy();
+        return { message: `Favorite receipe with ID ${id} has been deleted successfully` };
     }
 };
 exports.CreateReceipeService = CreateReceipeService;

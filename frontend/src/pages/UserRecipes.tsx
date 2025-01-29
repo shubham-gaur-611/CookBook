@@ -3,19 +3,12 @@ import { useQuery } from "@tanstack/react-query";
 import { Navbar } from "../components/custom/Navbar";
 import { apiCall } from "../config/apicall/apicall";
 import { useContextAuth } from "@/context/AuthContext";
-import {
-  Center,
-  Flex,
-  HStack,
-  Input,
-  Kbd,
-  Spinner,
-  Text,
-} from "@chakra-ui/react";
+import { Center, Flex, HStack, Input, Kbd, Spinner, Text } from "@chakra-ui/react";
 import { LuSearch } from "react-icons/lu";
 import { InputGroup } from "@/components/ui/input-group";
-import { FavoriteFilteredRecipesList } from "@/components/custom/FavoriteFilteredRecipesList";
+import { UserFilteredReceipeList } from "@/components/custom/UserFilteredReceipes";
 import { Box } from "@chakra-ui/react";
+
 interface Recipe {
   id: string;
   receip_name: string;
@@ -26,21 +19,25 @@ interface Recipe {
   posted_by: string;
 }
 
-export const FavoriteReceipes = () => {
+export const UserRecipes = () => {
   const { user } = useContextAuth();
   const [searchQuery, setSearchQuery] = useState("");
 
   const {
-    data: favRecipes,
+    data: recipes,
     isLoading,
     isError,
     error: errorData,
+    refetch
   } = useQuery<Recipe[]>({
-    queryKey: ["favoriteRecipes", user?.email],
-    queryFn: () => apiCall("get_favorite_receipes", null, user?.email),
+    queryKey: ["userRecipes", user?.email],
+    queryFn: () => apiCall("get_user_recipe", null, user?.email),
     enabled: !!user?.email,
     retry: 3,
-    staleTime: 300000,
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
+    refetchOnReconnect: true,
+    staleTime: 0 // Always fetch fresh data
   });
 
   if (isLoading) {
@@ -48,7 +45,7 @@ export const FavoriteReceipes = () => {
       <Center h="100vh">
         <Flex direction="column" align="center" gap={4}>
           <Spinner size="xl" color="teal.500" />
-          <Text>Loading favorite recipes...</Text>
+          <Text>Loading your recipes...</Text>
         </Flex>
       </Center>
     );
@@ -58,9 +55,7 @@ export const FavoriteReceipes = () => {
     return (
       <Center h="100vh">
         <Flex direction="column" align="center" gap={4}>
-          <Text color="red.500" fontSize="lg">
-            Error loading favorite recipes
-          </Text>
+          <Text color="red.500" fontSize="lg">Error loading your recipes</Text>
           <Text color="gray.600" fontSize="sm">
             {(errorData as Error)?.message || "Please try again later"}
           </Text>
@@ -71,39 +66,33 @@ export const FavoriteReceipes = () => {
 
   return (
     <>
-      <Navbar message="Favorite Recipes" />
+      <Navbar message="Your Recipes" />
       <Box pt="80px">
-        <Center>
-        <HStack
-            gap="10"
-            m="10px"
-            rounded={10}
-            width="32em"
-            position="relative"
-            zIndex="1"
+      <Center>
+        <HStack gap="10" m="10px" rounded={10} width="32em">
+          <InputGroup
+            flex="1"
+            startElement={<LuSearch />}
+            endElement={<Kbd>⌘K</Kbd>}
+            color="black"
           >
-            <InputGroup
-              flex="1"
-              startElement={<LuSearch />}
-              endElement={<Kbd>⌘K</Kbd>}
-              color="black"
-            >
-              <Input
-                placeholder="Search favorite recipes"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </InputGroup>
-          </HStack>
-        </Center>
+            <Input
+              placeholder="Search your recipes"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </InputGroup>
+        </HStack>
+      </Center>
       </Box>
-
       <Flex wrap="wrap" justify="space-between" gap={4} p={8}>
-        {favRecipes && (
-          <FavoriteFilteredRecipesList
-            favrecipes={favRecipes}
+        {recipes && (
+          <UserFilteredReceipeList
+            key={recipes.length} // Force re-render when recipes change
+            recipes={recipes}
             searchQuery={searchQuery}
             userEmail={user?.email || ""}
+            refetch={refetch}
           />
         )}
       </Flex>

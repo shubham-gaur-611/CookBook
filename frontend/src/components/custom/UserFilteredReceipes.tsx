@@ -7,14 +7,13 @@ import {
   Grid,
   HStack,
   Center,
-  Icon,
 } from "@chakra-ui/react";
 import { Toaster, toaster } from "@/components/ui/toaster";
 import { useNavigate } from "react-router-dom";
 import { useContextAuth } from "@/context/AuthContext";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiCall } from "@/config/apicall/apicall";
-import { AiFillHeart } from "react-icons/ai";
+import { IoTrashOutline } from "react-icons/io5";
 
 interface Recipe {
   id: string;
@@ -26,23 +25,24 @@ interface Recipe {
   posted_by: string;
 }
 
-interface FavoriteFilteredRecipesListProps {
-  favrecipes: Recipe[];
+interface UserReceipeListProps {
+  recipes: Recipe[];
   searchQuery: string;
   userEmail: string;
+  refetch: () => void;
 }
 
-export const FavoriteFilteredRecipesList: React.FC<
-  FavoriteFilteredRecipesListProps
-> = ({ favrecipes, searchQuery, userEmail }) => {
+export const UserFilteredReceipeList: React.FC<
+UserReceipeListProps
+> = ({ recipes, searchQuery, userEmail, refetch }) => {
   const navigate = useNavigate();
   const { user } = useContextAuth();
   const queryClient = useQueryClient();
 
-  const [filteredRecipes, setFilteredRecipes] = useState(favrecipes);
+  const [filteredRecipes, setFilteredRecipes] = useState(recipes);
 
   useEffect(() => {
-    const filtered = favrecipes.filter((item) => {
+    const filtered = recipes.filter((item) => {
       const matchesSearch = item.receip_name
         .toLowerCase()
         .includes(searchQuery.toLowerCase());
@@ -51,33 +51,49 @@ export const FavoriteFilteredRecipesList: React.FC<
       return matchesSearch && isVisible;
     });
     setFilteredRecipes(filtered);
-  }, [searchQuery, favrecipes, userEmail]);
+  }, [recipes, searchQuery, userEmail]);
 
-  const handleNavigate = (id: string) => {
+  const handleNavigate = (id: any) => {
     navigate(`/detailedreceipe/${id}`);
   };
 
-  const deleteFavoriteMutation = useMutation({
+  const deleteUserMutation = useMutation({
     mutationFn: (id: string) =>
-      apiCall("unfavorite_receipes", "cd", id, "delete"),
-    onSuccess: (_, id) => {
-      queryClient.invalidateQueries({ queryKey: ["favoriteRecipes", user?.email] });
-      toaster.success({
-        title: "Removed From Favorite List",
-        type: "loading",
-      });
+      apiCall("delete_receipe", null, id, "delete"),
+    onSuccess: async (_, id) => {
+      // First update the local state
       setFilteredRecipes((prev) => prev.filter((recipe) => recipe.id !== id));
+      
+      // Then invalidate queries
+      await queryClient.invalidateQueries({ queryKey: ["userRecipes"] });
+      await queryClient.invalidateQueries({ queryKey: ["recipes"] });
+      
+      // Finally, refetch to ensure we have the latest data
+      await refetch();
+      
+      toaster.success({
+        title: "Recipe Deleted Successfully",
+        type: "success",
+      });
     },
     onError: (err) => {
-      alert(err);
+      toaster.error({
+        title: "Error Deleting Recipe",
+        description: err instanceof Error ? err.message : "An error occurred",
+        type: "error",
+      });
     },
   });
 
-  const handleUnFavorite = (id: string) => {
+  const handleUserReceipes = (id: string) => {
     if (user?.email) {
-      deleteFavoriteMutation.mutate(id);
+      deleteUserMutation.mutate(id);
     } else {
-      console.error("User is not logged in!");
+      toaster.error({
+        title: "Authentication Error",
+        description: "You must be logged in to delete recipes",
+        type: "error",
+      });
     }
   };
 
@@ -93,21 +109,20 @@ export const FavoriteFilteredRecipesList: React.FC<
         width="100%"
       >
         <Grid templateColumns="repeat(4, 1fr)" gap={6} p={4}>
-          {filteredRecipes && filteredRecipes.length > 0 ? (
+          {recipes && recipes.length > 0 ? (
             filteredRecipes.map((item) => (
               <Box
-              key={item.id}
-              borderWidth="1px"
-              borderRadius="lg"
-              overflow="hidden"
-              boxShadow="md"
-              bg={"whitesmoke"}
-              maxW="250px"
-              maxH="fit-content"
-              _hover={{ transform: "scale(1.05)", transition: "0.3s" }}
-              shadow="lg"
-              position="relative"
-            >
+                key={item.id}
+                borderWidth="1px"
+                borderRadius="lg"
+                overflow="hidden"
+                boxShadow="md"
+                bg="whitesmoke"
+                maxW="250px"
+                maxH="fit-content"
+                _hover={{ transform: "scale(1.05)", transition: "0.3s" }}
+                shadow="lg"
+              >
                 <Center>
                   <Image
                     src={`http://localhost:3000${item.receip_image}`}
@@ -135,22 +150,19 @@ export const FavoriteFilteredRecipesList: React.FC<
                   >
                     Read More
                   </Button>
-                  <Icon
-                    as={AiFillHeart}
-                    color="red.500"
-                    boxSize={6}
+                  <IoTrashOutline
+                    size="24px" 
+                    color="blue"
                     cursor="pointer"
-                    onClick={() => handleUnFavorite(item.id)}
-                    _hover={{ transform: "scale(1.1)" }}
-                    transition="transform 0.2s"
+                    onClick={() => handleUserReceipes(item.id)}
                   />
                 </HStack>
               </Box>
             ))
           ) : (
             <Text color="gray.400" fontSize="lg" textAlign="center">
-              No recipes available.
-            </Text>
+            No recipes available.
+          </Text>
           )}
         </Grid>
       </Box>

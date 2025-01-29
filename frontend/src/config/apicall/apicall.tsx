@@ -5,26 +5,42 @@ export const apiCall = async (
   url: string,
   data?: any,
   id?: string,
-  email?: string
+  deleteapi?: string
 ) => {
   let endpoint = endpoints[url];
 
-  if (id && email) {
-    endpoint = endpoint(id,email);
-    const response = await axios.delete(endpoint);
+  if (id && deleteapi) {
+    endpoint = endpoint(id, deleteapi);
+    const response = await axios.delete(endpoint, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    });
     return response.data;
   }
 
   if (id) {
     endpoint = endpoint(id);
-    const response = await axios.get(endpoint);
+    const response = await axios.get(endpoint, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    });
       return response.data;
   }
   if (!data) {
-    const response = await axios.get(endpoint);
+    const response = await axios.get(endpoint, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    });
     return response.data;
   } else {
-    const response = await axios.post(endpoint, data);
+    const response = await axios.post(endpoint, data, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    });
     return response.data;
   }
 };
