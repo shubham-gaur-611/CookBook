@@ -68,7 +68,7 @@ export const DetailedReceipe = () => {
   return (
     <>
       <Navbar message={receipeName} />
-      <Box minH="100vh" py={8}>
+      <Box marginTop={20} minH="100vh" py={8}>
         <Container maxW="6xl">
           <Grid templateColumns={{ base: "1fr", lg: "1fr 1.2fr" }} gap={8}>
             <GridItem>

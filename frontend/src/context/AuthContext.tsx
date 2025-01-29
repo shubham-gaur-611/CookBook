@@ -6,6 +6,8 @@ import React, {
   ReactNode,
 } from "react";
 
+import { useNavigate } from "react-router-dom";
+
 interface User {
   email: string;
   token: string;
@@ -13,7 +15,7 @@ interface User {
 
 interface AuthContextType {
   user: User | null;
-  login: (email: string, token: string, expiresIn: number) => void;
+  login: (email: string, token: string) => void;
   logout: () => void;
 }
 
@@ -25,6 +27,8 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+  const navigate = useNavigate(); // Use navigate hook
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     const userEmail = localStorage.getItem("user");
@@ -33,11 +37,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   }, []);
 
-  const login = (email: string, token: string, expiresIn: number): void => {
-    const expiryTime = new Date().getTime() + expiresIn * 1000;
+  const login = (email: string, token: string): void => {
     localStorage.setItem("token", token);
     localStorage.setItem("user", email);
-    localStorage.setItem("tokenExpiry", expiryTime.toString());
     setUser({ email, token });
   };
 
@@ -46,6 +48,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     localStorage.removeItem("user");
     localStorage.removeItem("tokenExpiry");
     setUser(null);
+    navigate("/login"); // Navigate to the login page
   };
 
   return (

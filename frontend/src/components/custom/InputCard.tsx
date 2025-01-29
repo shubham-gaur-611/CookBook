@@ -81,7 +81,7 @@ export const InputCard = () => {
       <Box p={6} maxW="800px" mx="auto" mt={10}>
         <Stack>
           <form onSubmit={handleSubmit(onsubmit)}>
-            <Card.Root style={{ marginBottom: "10px" }} size="md">
+            <Card.Root variant={"elevated"} key={"elevated"} style={{ marginBottom: "10px" }} size="md">
               <Card.Header>
                 <Heading textStyle="xl" size="md">
                   Recipe Name

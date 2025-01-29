@@ -36,13 +36,14 @@ let AuthService = class AuthService {
     async validateUser(email, password) {
         const user = await this.userModel.findOne({ where: { email } });
         if (user && (await bcrypt.compare(password, user.password))) {
-            const expiresIn = parseInt(process.env.JWT_EXPIRES_IN) || 20;
-            const token = jwt.sign({ email }, process.env.JWT_SECRET || 'your-secret-key', { expiresIn: `${expiresIn}s` });
+            const token = jwt.sign({
+                email: user.email,
+                id: user.id
+            }, process.env.JWT_SECRET || 'your-secret-key');
             return {
                 message: 'Login successful',
                 user: user.email,
-                token: token,
-                expiresIn: expiresIn
+                token: token
             };
         }
         throw new Error('Invalid credentials');

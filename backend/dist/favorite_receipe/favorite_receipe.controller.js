@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.FavoriteReceipeController = void 0;
 const common_1 = require("@nestjs/common");
 const favorite_receipe_service_1 = require("./favorite_receipe.service");
+const get_user_decorator_1 = require("../common/decorators/get-user.decorator");
 let FavoriteReceipeController = class FavoriteReceipeController {
     constructor(favoritereceipeservice) {
         this.favoritereceipeservice = favoritereceipeservice;
@@ -45,11 +46,11 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], FavoriteReceipeController.prototype, "findReceipe", null);
 __decorate([
-    (0, common_1.Delete)(':id/:user'),
-    __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, common_1.Param)('user')),
+    (0, common_1.Delete)(':id'),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    __param(1, (0, get_user_decorator_1.GetUser)('email')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:paramtypes", [Number, String]),
     __metadata("design:returntype", Promise)
 ], FavoriteReceipeController.prototype, "deleteReceipe", null);
 exports.FavoriteReceipeController = FavoriteReceipeController = __decorate([

@@ -11,24 +11,26 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Favorite_Receipe = void 0;
 const sequelize_typescript_1 = require("sequelize-typescript");
+const create_receipe_model_1 = require("../create_receipe/create_receipe.model");
 let Favorite_Receipe = class Favorite_Receipe extends sequelize_typescript_1.Model {
 };
 exports.Favorite_Receipe = Favorite_Receipe;
 __decorate([
     (0, sequelize_typescript_1.Column)({
-        type: sequelize_typescript_1.DataType.STRING,
+        type: sequelize_typescript_1.DataType.INTEGER,
         primaryKey: true,
         autoIncrement: true,
         allowNull: false,
     }),
-    __metadata("design:type", String)
+    __metadata("design:type", Number)
 ], Favorite_Receipe.prototype, "id", void 0);
 __decorate([
+    (0, sequelize_typescript_1.ForeignKey)(() => create_receipe_model_1.Create_Receipe),
     (0, sequelize_typescript_1.Column)({
-        type: sequelize_typescript_1.DataType.STRING,
+        type: sequelize_typescript_1.DataType.INTEGER,
         allowNull: false,
     }),
-    __metadata("design:type", String)
+    __metadata("design:type", Number)
 ], Favorite_Receipe.prototype, "receip_id", void 0);
 __decorate([
     (0, sequelize_typescript_1.Column)({
@@ -37,6 +39,10 @@ __decorate([
     }),
     __metadata("design:type", String)
 ], Favorite_Receipe.prototype, "favorite_by", void 0);
+__decorate([
+    (0, sequelize_typescript_1.BelongsTo)(() => create_receipe_model_1.Create_Receipe),
+    __metadata("design:type", create_receipe_model_1.Create_Receipe)
+], Favorite_Receipe.prototype, "recipe", void 0);
 __decorate([
     (0, sequelize_typescript_1.Column)({
         type: sequelize_typescript_1.DataType.DATE,

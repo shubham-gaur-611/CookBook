@@ -2,7 +2,7 @@
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up (queryInterface, Sequelize) {
+  async up(queryInterface, Sequelize) {
     await queryInterface.createTable('favorite-receipe', {
       id: {
         type: Sequelize.INTEGER,
@@ -11,49 +11,45 @@ module.exports = {
         allowNull: false
       },
       receip_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false
+      },
+      favorite_by: {
         type: Sequelize.STRING,
         allowNull: false
       },
-      // receip_name: {
-      //   type: Sequelize.STRING,
-      //   allowNull: false
-      // },
-      // instructions: {
-      //   type: Sequelize.STRING(1000),
-      //   allowNull:false
-      // },
-      // ingredients: {
-      //   type: Sequelize.STRING(1000),
-      //   allowNull:false
-      // },
-      // receip_image: {
-      //   type: Sequelize.STRING,
-      //   allowNull: false
-      // },
-      // posted_by: {
-      //   type: Sequelize.STRING,
-      //   allowNull:false
-      // },
-      // private_receipe: {
-      //   type: Sequelize.STRING,
-      //   allowNull:false
-      // },
-      favorite_by: {
-        type: Sequelize.STRING,
-        allowNull:false
-      },
       createdAt: {
-        type: Sequelize.DATE,
         allowNull: false,
+        type: Sequelize.DATE
       },
       updatedAt: {
-        type: Sequelize.DATE,
         allowNull: false,
+        type: Sequelize.DATE
+      }
+    });
+
+    // Add foreign key constraint
+    await queryInterface.addConstraint('favorite-receipe', {
+      fields: ['receip_id'],
+      type: 'foreign key',
+      name: 'fk_favorite_recipe_recipe',
+      references: {
+        table: 'create_receipe',
+        field: 'id',
       },
-    })
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
+    });
   },
 
-  async down (queryInterface, Sequelize) {
+  async down(queryInterface, Sequelize) {
+    // First remove the foreign key constraint
+    await queryInterface.removeConstraint(
+      'favorite-receipe',
+      'fk_favorite_recipe_recipe'
+    );
+    
+    // Then drop the table
     await queryInterface.dropTable('favorite-receipe');
   }
 };

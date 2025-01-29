@@ -9,11 +9,15 @@ import {
   HttpCode,
   UseInterceptors,
   UploadedFile,
+  UseGuards,
+  ParseIntPipe
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CreateReceipeService } from './create_receipe.service';
 import { Create_Receipe } from './create_receipe.model';
 import { storage, fileFilter } from '../common/helpers/file-upload.helper';
+import { Public } from 'src/common/decorators/public.decorator';
+import { GetUser } from 'src/common/decorators/get-user.decorator';
 
 @Controller('create-receipe')
 export class CreateReceipeController {
@@ -35,13 +39,28 @@ export class CreateReceipeController {
     }
     return await this.createreceipeservices.create(data);
   }
+  @Public()
   @Get('getreceipes')
   async findAll(): Promise<Create_Receipe[]> {
     return await this.createreceipeservices.findAll();
   }
-
+  @Public()
   @Get(':id')
   async findReceipe(@Param('id') id: number): Promise<Create_Receipe> {
     return await this.createreceipeservices.findReceipe(id);
   }
+
+  @Get('user-recipe/:id')
+  async findUserReceipe(@Param('id') id: string): Promise<Create_Receipe[]> {
+    return await this.createreceipeservices.findUserReceipe(id);
+  }
+
+  @Delete(':id')
+    async deleteReceipe(
+      @Param('id', ParseIntPipe) id: number,
+      @GetUser('email') user: string,
+    ): Promise<{ message: string }> {
+      return this.createreceipeservices.deleteReceipe(id, user);
+    }
+  
 }

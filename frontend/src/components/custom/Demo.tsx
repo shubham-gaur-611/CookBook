@@ -1,81 +1,68 @@
-import React from 'react';
-import { Box, Flex, Image, Text } from '@chakra-ui/react';
+'use client'
 
-interface CardProps {
-  image: string;
-  title: string;
-  description: string;
+import {
+  Flex,
+  Box,
+
+  Input,
+  Checkbox,
+  Stack,
+  Button,
+  Heading,
+  Text,
+} from '@chakra-ui/react'
+
+import { useColorModeValue } from '../ui/color-mode'
+
+export default function Demo() {
+    return (
+      <div></div>
+    // <Flex
+    //   minH={'100vh'}
+    //   align={'center'}
+    //   justify={'center'}
+    //   bg={useColorModeValue('gray.50', 'gray.800')}>
+    //   <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
+    //     <Stack align={'center'}>
+    //       <Heading fontSize={'4xl'}>Sign in to your account</Heading>
+    //       <Text fontSize={'lg'} color={'gray.600'}>
+    //         to enjoy all of our cool <Text color={'blue.400'}>features</Text> ✌️
+    //       </Text>
+    //     </Stack>
+    //     <Box
+    //       rounded={'lg'}
+    //       bg={useColorModeValue('white', 'gray.700')}
+    //       boxShadow={'lg'}
+    //       p={8}>
+    //       <Stack spacing={4}>
+    //         <FormControl id="email">
+    //           <FormLabel>Email address</FormLabel>
+    //           <Input type="email" />
+    //         </FormControl>
+    //         <FormControl id="password">
+    //           <FormLabel>Password</FormLabel>
+    //           <Input type="password" />
+    //         </FormControl>
+    //         <Stack spacing={10}>
+    //           <Stack
+    //             direction={{ base: 'column', sm: 'row' }}
+    //             align={'start'}
+    //             justify={'space-between'}>
+    //             <Checkbox>Remember me</Checkbox>
+    //             <Text color={'blue.400'}>Forgot password?</Text>
+    //           </Stack>
+    //           <Button
+    //             bg={'blue.400'}
+    //             color={'white'}
+    //             _hover={{
+    //               bg: 'blue.500',
+    //             }}>
+    //             Sign in
+    //           </Button>
+    //         </Stack>
+    //       </Stack>
+    //     </Box>
+    //   </Stack>
+    // </Flex>
+  )
 }
-
-const Card: React.FC<CardProps> = ({ image, title, description }) => (
-  <Box 
-    borderWidth="1px" 
-    borderRadius="lg" 
-    overflow="hidden" 
-    boxShadow="md" 
-    p={4} 
-    bg="white"
-    maxW="200px"
-  >
-    <Image src={image} alt={title} borderRadius="md" />
-    <Box mt={4}>
-      <Text fontWeight="bold" fontSize="lg" mb={2}>
-        {title}
-      </Text>
-      <Text fontSize="sm" color="gray.600">
-        {description}
-      </Text>
-    </Box>
-  </Box>
-);
-
-export const Demo: React.FC = () => {
-  const cards: CardProps[] = [
-    {
-      image: 'https://placehold.co/200x200',
-      title: 'Card 1',
-      description: 'This is the description for card 1.',
-    },
-    {
-      image: 'https://placehold.co/200x200',
-      title: 'Card 2',
-      description: 'This is the description for card 2.',
-    },
-    {
-      image: 'https://placehold.co/200x200',
-      title: 'Card 3',
-      description: 'This is the description for card 3.',
-    },
-    {
-      image: 'https://placehold.co/200x200',
-      title: 'Card 4',
-      description: 'This is the description for card 4.',
-    },
-    {
-      image: 'https://placehold.co/200x200',
-      title: 'Card 5',
-      description: 'This is the description for card 5.',
-    },
-  ];
-
-  return (
-    <Flex 
-      wrap="wrap" 
-      justify="space-between" 
-      gap={4} 
-      bg="gray.50" 
-      p={8}
-    >
-      {cards.map((card, index) => (
-        <Card 
-          key={index} 
-          image={card.image} 
-          title={card.title} 
-          description={card.description} 
-        />
-      ))}
-    </Flex>
-  );
-};
-
-

@@ -1,4 +1,5 @@
-import { Column, DataType, Model, Table } from 'sequelize-typescript';
+import { Column, DataType, Model, Table, ForeignKey, BelongsTo } from 'sequelize-typescript';
+import { Create_Receipe } from '../create_receipe/create_receipe.model';
 
 @Table({
   tableName: 'favorite-receipe',
@@ -6,60 +7,28 @@ import { Column, DataType, Model, Table } from 'sequelize-typescript';
 })
 export class Favorite_Receipe extends Model<Favorite_Receipe> {
   @Column({
-    type: DataType.STRING,
+    type: DataType.INTEGER,
     primaryKey: true,
     autoIncrement: true,
     allowNull: false,
   })
-  id: string;
+  id: number;
 
+  @ForeignKey(() => Create_Receipe)
   @Column({
-    type: DataType.STRING,
+    type: DataType.INTEGER,
     allowNull: false,
   })
-  receip_id: string;
-
-//   @Column({
-//     type: DataType.STRING,
-//     allowNull: false,
-//   })
-//   receip_name: string;
-
-//   @Column({
-//     type: DataType.STRING(1000),
-//     allowNull: false,
-//   })
-//   instructions: string;
-
-//   @Column({
-//     type: DataType.STRING(1000),
-//     allowNull: false,
-//   })
-//   ingredients: string;
-
-//   @Column({
-//     type: DataType.STRING,
-//     allowNull: false,
-//   })
-//   receip_image: string;
-
-//   @Column({
-//     type: DataType.STRING,
-//     allowNull: false,
-//   })
-//   posted_by: string;
-
-//   @Column({
-//     type: DataType.STRING,
-//     allowNull: false,
-//   })
-//   private_receipe: string;
+  receip_id: number;
 
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
   favorite_by: string;
+
+  @BelongsTo(() => Create_Receipe)
+  recipe: Create_Receipe;
 
   @Column({
     type: DataType.DATE,
