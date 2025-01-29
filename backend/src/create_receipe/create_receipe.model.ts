@@ -6,7 +6,7 @@ import { Column, DataType, Model, Table } from 'sequelize-typescript';
 })
 export class Create_Receipe extends Model<Create_Receipe> {
   @Column({
-    type: DataType.STRING,
+    type: DataType.INTEGER,
     primaryKey: true,
     autoIncrement: true,
     allowNull: false,

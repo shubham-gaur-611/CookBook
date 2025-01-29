@@ -16,7 +16,7 @@ let Create_Receipe = class Create_Receipe extends sequelize_typescript_1.Model {
 exports.Create_Receipe = Create_Receipe;
 __decorate([
     (0, sequelize_typescript_1.Column)({
-        type: sequelize_typescript_1.DataType.STRING,
+        type: sequelize_typescript_1.DataType.INTEGER,
         primaryKey: true,
         autoIncrement: true,
         allowNull: false,

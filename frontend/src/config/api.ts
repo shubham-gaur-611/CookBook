@@ -7,8 +7,8 @@ export const endpoints:any = {
     get_receipe: `${API_BASE_URL}/create-receipe/getreceipes`,
     receipe_id: (id: string) => `${API_BASE_URL}/create-receipe/${id}`,
     delete_receipe: (id: string) => `${API_BASE_URL}/create-receipe/${id}`,
-    get_user_recipe: (id: string) => `${API_BASE_URL}/create-receipe/user-recipe/${id}`,
+    get_user_recipe: `${API_BASE_URL}/create-receipe/user-recipe`,
     favorite_receipes: `${API_BASE_URL}/favorite-receipe/create`,
     unfavorite_receipes: (id: string) =>`${API_BASE_URL}/favorite-receipe/${id}`,
-    get_favorite_receipes: (id: string) => `${API_BASE_URL}/favorite-receipe/${id}`,
+    get_favorite_receipes: `${API_BASE_URL}/favorite-receipe/user`,
 };  

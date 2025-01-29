@@ -20,8 +20,8 @@ async create(@Body() body: { receip_id: number; favorite_by: string }) {
   return await this.favoritereceipeservice.create(body.receip_id, body.favorite_by);
 }
 
-@Get(':id')
-async findReceipe(@Param('id') id: string): Promise<Create_Receipe[]> {
+@Get('user')
+async findReceipe(@GetUser('email') id: string): Promise<Create_Receipe[]> {
   return await this.favoritereceipeservice.findReceipes(id);
 }
 

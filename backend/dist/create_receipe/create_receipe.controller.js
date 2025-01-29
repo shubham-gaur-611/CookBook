@@ -29,17 +29,17 @@ let CreateReceipeController = class CreateReceipeController {
         }
         return await this.createreceipeservices.create(data);
     }
-    async findAll() {
-        return await this.createreceipeservices.findAll();
+    findAll() {
+        return this.createreceipeservices.findAll();
     }
-    async findReceipe(id) {
-        return await this.createreceipeservices.findReceipe(id);
+    findUserRecipe(email) {
+        return this.createreceipeservices.findUserRecipe(email);
     }
-    async findUserReceipe(id) {
-        return await this.createreceipeservices.findUserReceipe(id);
+    findReceipe(id) {
+        return this.createreceipeservices.findRecipe(id);
     }
-    async deleteReceipe(id, user) {
-        return this.createreceipeservices.deleteReceipe(id, user);
+    deleteReceipe(id, user) {
+        return this.createreceipeservices.deleteRecipe(id, user);
     }
 };
 exports.CreateReceipeController = CreateReceipeController;
@@ -63,6 +63,13 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], CreateReceipeController.prototype, "findAll", null);
 __decorate([
+    (0, common_1.Get)('user-recipe'),
+    __param(0, (0, get_user_decorator_1.GetUser)('email')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], CreateReceipeController.prototype, "findUserRecipe", null);
+__decorate([
     (0, public_decorator_1.Public)(),
     (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)('id')),
@@ -70,13 +77,6 @@ __decorate([
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)
 ], CreateReceipeController.prototype, "findReceipe", null);
-__decorate([
-    (0, common_1.Get)('user-recipe/:id'),
-    __param(0, (0, common_1.Param)('id')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], CreateReceipeController.prototype, "findUserReceipe", null);
 __decorate([
     (0, common_1.Delete)(':id'),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),

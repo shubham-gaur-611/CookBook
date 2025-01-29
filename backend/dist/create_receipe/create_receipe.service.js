@@ -26,31 +26,36 @@ let CreateReceipeService = class CreateReceipeService {
     findAll() {
         return this.create_receipeModel.findAll();
     }
-    async findReceipe(id) {
-        const oneReceipe = await this.create_receipeModel.findByPk(id);
+    findRecipe(id) {
+        const oneReceipe = this.create_receipeModel.findByPk(id);
         if (!oneReceipe) {
             throw new common_1.NotFoundException(`Receipe with ID ${id} not found`);
         }
         return oneReceipe;
     }
-    async findUserReceipe(id) {
-        const userReceipe = await this.create_receipeModel.findAll({
-            where: { posted_by: id }
-        });
-        if (!userReceipe) {
-            throw new common_1.NotFoundException(`Receipe with ID ${id} not found`);
+    async findUserRecipe(email) {
+        try {
+            const userReceipe = await this.create_receipeModel.findAll({
+                where: { posted_by: email },
+            });
+            return userReceipe;
         }
-        return userReceipe;
+        catch (error) {
+            console.error('Error finding user recipes:', error);
+            throw error;
+        }
     }
-    async deleteReceipe(id, email) {
+    async deleteRecipe(id, email) {
         const receipe = await this.create_receipeModel.findOne({
-            where: { id: id, posted_by: email }
+            where: { id: id, posted_by: email },
         });
         if (!receipe) {
             throw new common_1.NotFoundException(`Favorite receipe with ID ${id} not found`);
         }
         await receipe.destroy();
-        return { message: `Favorite receipe with ID ${id} has been deleted successfully` };
+        return {
+            message: `Favorite receipe with ID ${id} has been deleted successfully`,
+        };
     }
 };
 exports.CreateReceipeService = CreateReceipeService;

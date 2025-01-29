@@ -50,7 +50,10 @@ export const LoginPage = () => {
       setTimeout(() => navigate("/allreceipe"), 2000);
     },
     onError: () => {
-      alert("Invalid email or password");
+      toaster.error({
+        title: "Invalid Credentials",
+        type: "loading",
+      });
     },
   });
 
