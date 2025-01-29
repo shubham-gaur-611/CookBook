@@ -8,7 +8,6 @@ export const apiCall = async (
   deleteapi?: string
 ) => {
   let endpoint = endpoints[url];
-
   if (id && deleteapi) {
     endpoint = endpoint(id, deleteapi);
     const response = await axios.delete(endpoint, {
@@ -36,6 +35,7 @@ export const apiCall = async (
     });
     return response.data;
   } else {
+    
     const response = await axios.post(endpoint, data, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`

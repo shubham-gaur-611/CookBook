@@ -16,7 +16,7 @@ let User = class User extends sequelize_typescript_1.Model {
 exports.User = User;
 __decorate([
     (0, sequelize_typescript_1.Column)({
-        type: sequelize_typescript_1.DataType.STRING,
+        type: sequelize_typescript_1.DataType.INTEGER,
         unique: true,
         allowNull: false,
     }),

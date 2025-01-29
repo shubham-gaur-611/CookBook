@@ -34,11 +34,6 @@ interface FilteredRecipesListProps {
   refetch:UseQueryResult['refetch']
 }
 
-interface FavoriteReceipe {
-  receip_id: string;
-  favorite_by: string;
-}
-
 export const FilteredRecipesList: React.FC<FilteredRecipesListProps> = ({
   recipes,
   favrecipes,
@@ -68,45 +63,38 @@ export const FilteredRecipesList: React.FC<FilteredRecipesListProps> = ({
     return favrecipes?.some((favRecipe) => favRecipe.id === recipeId) || false;
   };
 
-  const favoriteMutation = useMutation({
-    mutationFn: (data: FavoriteReceipe) => apiCall("favorite_receipes", data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["recipes", user?.email, "favRecipe"] });
-      refetch()
+  const toggleFavoriteMutation = useMutation({
+    mutationFn: async (recipeId: string) => {
+      if (isFavorite(recipeId)) {
+        return apiCall("unfavorite_receipes", null, recipeId, "delete");
+      } else {
+        return apiCall("favorite_receipes", {
+          receip_id: recipeId,
+          favorite_by: user?.email,
+        });
+      }
+    },
+    onSuccess: (_, recipeId) => {
+      queryClient.invalidateQueries({ queryKey: ["recipes", user?.email, "favoriteRecipes"] });
+      refetch();
       toaster.success({
-        title: "Added to favorites successfully",
+        title: isFavorite(recipeId)
+          ? "Removed from favorites"
+          : "Added to favorites successfully",
         type: "success",
       });
     },
-    onError: () => {
+    onError: (_, recipeId) => {
       toaster.error({
-        title: "Failed to add to favorites",
+        title: isFavorite(recipeId)
+          ? "Failed to remove from favorites"
+          : "Failed to add to favorites",
         description: "Please try again later",
         type: "error",
       });
     },
   });
-
-  const deleteFavoriteMutation = useMutation({
-    mutationFn: (id: string) =>
-      apiCall("unfavorite_receipes", null, id, "delete"),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["recipes", user?.email, "favRecipes"] });
-      refetch()
-      toaster.success({
-        title: "Removed from favorites",
-        type: "success",
-      });
-    },
-    onError: () => {
-      toaster.error({
-        title: "Failed to remove from favorites",
-        description: "Please try again later",
-        type: "error",
-      });
-    },
-  });
-
+  
   const handleFavoriteClick = (recipeId: string) => {
     if (!user) {
       toaster.error({
@@ -116,17 +104,8 @@ export const FilteredRecipesList: React.FC<FilteredRecipesListProps> = ({
       });
       return;
     }
-
-    if (isFavorite(recipeId)) {
-      deleteFavoriteMutation.mutate(recipeId);
-    } else {
-      favoriteMutation.mutate({
-        receip_id: recipeId,
-        favorite_by: user.email,
-      });
-    }
+    toggleFavoriteMutation.mutate(recipeId);
   };
-
   return (
     <>
       <Toaster />

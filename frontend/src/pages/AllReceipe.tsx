@@ -52,7 +52,7 @@ export const AllReceipe = () => {
     refetch,
   } = useQuery<Recipe[]>({
     queryKey: ["favoriteRecipes", user?.email],
-    queryFn: () => apiCall("get_favorite_receipes", null, user?.email),
+    queryFn: () => apiCall("get_favorite_receipes"),
     enabled: !!user?.email,
     retry: 3,
   });

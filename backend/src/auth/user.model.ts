@@ -6,7 +6,7 @@ import { Column, DataType, Model, Table } from 'sequelize-typescript';
 })
 export class User extends Model<User> {
   @Column({
-    type: DataType.STRING,
+    type: DataType.INTEGER,
     unique: true,
     allowNull: false,
   })

@@ -39,28 +39,30 @@ export class CreateReceipeController {
     }
     return await this.createreceipeservices.create(data);
   }
+
   @Public()
   @Get('getreceipes')
-  async findAll(): Promise<Create_Receipe[]> {
-    return await this.createreceipeservices.findAll();
+   findAll(): Promise<Create_Receipe[]> {
+    return  this.createreceipeservices.findAll();
   }
+
+  @Get('user-recipe')
+  findUserRecipe(@GetUser('email') email: string): Promise<Create_Receipe[]> {
+   return  this.createreceipeservices.findUserRecipe(email);
+ }
+
   @Public()
   @Get(':id')
-  async findReceipe(@Param('id') id: number): Promise<Create_Receipe> {
-    return await this.createreceipeservices.findReceipe(id);
+   findReceipe(@Param('id') id: number): Promise<Create_Receipe> {
+    return  this.createreceipeservices.findRecipe(id);
   }
-
-  @Get('user-recipe/:id')
-  async findUserReceipe(@Param('id') id: string): Promise<Create_Receipe[]> {
-    return await this.createreceipeservices.findUserReceipe(id);
-  }
-
+ 
   @Delete(':id')
-    async deleteReceipe(
+     deleteReceipe(
       @Param('id', ParseIntPipe) id: number,
       @GetUser('email') user: string,
     ): Promise<{ message: string }> {
-      return this.createreceipeservices.deleteReceipe(id, user);
+      return this.createreceipeservices.deleteRecipe(id, user);
     }
   
 }

@@ -4,9 +4,9 @@ export declare class CreateReceipeService {
     constructor(create_receipeModel: typeof Create_Receipe);
     create(data: Partial<Create_Receipe>): Promise<Create_Receipe>;
     findAll(): Promise<Create_Receipe[]>;
-    findReceipe(id: number): Promise<Create_Receipe>;
-    findUserReceipe(id: string): Promise<Create_Receipe[]>;
-    deleteReceipe(id: number, email: string): Promise<{
+    findRecipe(id: number): Promise<Create_Receipe>;
+    findUserRecipe(email: string): Promise<Create_Receipe[]>;
+    deleteRecipe(id: number, email: string): Promise<{
         message: string;
     }>;
 }

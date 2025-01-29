@@ -31,7 +31,7 @@ export const UserRecipes = () => {
     refetch
   } = useQuery<Recipe[]>({
     queryKey: ["userRecipes", user?.email],
-    queryFn: () => apiCall("get_user_recipe", null, user?.email),
+    queryFn: () => apiCall("get_user_recipe"),
     enabled: !!user?.email,
     retry: 3,
     refetchOnWindowFocus: true,
