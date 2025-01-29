@@ -14,6 +14,11 @@ const auth_module_1 = require("./auth/auth.module");
 const database_module_1 = require("./database/database.module");
 const create_receipe_module_1 = require("./create_receipe/create_receipe.module");
 const favorite_receipe_module_1 = require("./favorite_receipe/favorite_receipe.module");
+const core_1 = require("@nestjs/core");
+const auth_guard_1 = require("./common/guards/auth.guard");
+const jwt_1 = require("@nestjs/jwt");
+const dotenv = require("dotenv");
+dotenv.config();
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -24,9 +29,19 @@ exports.AppModule = AppModule = __decorate([
             auth_module_1.AuthModule,
             create_receipe_module_1.CreateReceipeModule,
             favorite_receipe_module_1.FavoriteReceipeModule,
+            jwt_1.JwtModule.register({
+                global: true,
+                secret: process.env.JWT_SECRET || 'your-secret-key',
+            }),
         ],
         controllers: [app_controller_1.AppController],
-        providers: [app_service_1.AppService],
+        providers: [
+            app_service_1.AppService,
+            {
+                provide: core_1.APP_GUARD,
+                useClass: auth_guard_1.AuthGuard,
+            },
+        ],
     })
 ], AppModule);
 //# sourceMappingURL=app.module.js.map

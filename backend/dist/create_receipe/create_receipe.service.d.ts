@@ -5,4 +5,8 @@ export declare class CreateReceipeService {
     create(data: Partial<Create_Receipe>): Promise<Create_Receipe>;
     findAll(): Promise<Create_Receipe[]>;
     findReceipe(id: number): Promise<Create_Receipe>;
+    findUserReceipe(id: string): Promise<Create_Receipe[]>;
+    deleteReceipe(id: number, email: string): Promise<{
+        message: string;
+    }>;
 }

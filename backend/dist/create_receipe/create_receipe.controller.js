@@ -17,6 +17,8 @@ const common_1 = require("@nestjs/common");
 const platform_express_1 = require("@nestjs/platform-express");
 const create_receipe_service_1 = require("./create_receipe.service");
 const file_upload_helper_1 = require("../common/helpers/file-upload.helper");
+const public_decorator_1 = require("../common/decorators/public.decorator");
+const get_user_decorator_1 = require("../common/decorators/get-user.decorator");
 let CreateReceipeController = class CreateReceipeController {
     constructor(createreceipeservices) {
         this.createreceipeservices = createreceipeservices;
@@ -33,6 +35,12 @@ let CreateReceipeController = class CreateReceipeController {
     async findReceipe(id) {
         return await this.createreceipeservices.findReceipe(id);
     }
+    async findUserReceipe(id) {
+        return await this.createreceipeservices.findUserReceipe(id);
+    }
+    async deleteReceipe(id, user) {
+        return this.createreceipeservices.deleteReceipe(id, user);
+    }
 };
 exports.CreateReceipeController = CreateReceipeController;
 __decorate([
@@ -48,18 +56,35 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], CreateReceipeController.prototype, "create", null);
 __decorate([
+    (0, public_decorator_1.Public)(),
     (0, common_1.Get)('getreceipes'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], CreateReceipeController.prototype, "findAll", null);
 __decorate([
+    (0, public_decorator_1.Public)(),
     (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)
 ], CreateReceipeController.prototype, "findReceipe", null);
+__decorate([
+    (0, common_1.Get)('user-recipe/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], CreateReceipeController.prototype, "findUserReceipe", null);
+__decorate([
+    (0, common_1.Delete)(':id'),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    __param(1, (0, get_user_decorator_1.GetUser)('email')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, String]),
+    __metadata("design:returntype", Promise)
+], CreateReceipeController.prototype, "deleteReceipe", null);
 exports.CreateReceipeController = CreateReceipeController = __decorate([
     (0, common_1.Controller)('create-receipe'),
     __metadata("design:paramtypes", [create_receipe_service_1.CreateReceipeService])

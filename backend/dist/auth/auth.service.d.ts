@@ -9,6 +9,5 @@ export declare class AuthService {
         message: string;
         user?: string;
         token?: string;
-        expiresIn?: number;
     }>;
 }

@@ -4,11 +4,11 @@ export declare class FavoriteReceipeService {
     private favorite_receipeModel;
     private create_receipeModel;
     constructor(favorite_receipeModel: typeof Favorite_Receipe, create_receipeModel: typeof Create_Receipe);
-    create(receip_id: string, favorite_by: string): Promise<{
+    create(receip_id: number, favorite_by: string): Promise<{
         message: string;
     }>;
     findReceipes(id: string): Promise<Create_Receipe[]>;
-    deleteReceipe(id: string, email: string): Promise<{
+    deleteReceipe(id: number, email: string): Promise<{
         message: string;
     }>;
 }

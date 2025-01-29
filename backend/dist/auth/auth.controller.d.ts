@@ -15,6 +15,5 @@ export declare class AuthController {
         message: string;
         user?: string;
         token?: string;
-        expiresIn?: number;
     }>;
 }
