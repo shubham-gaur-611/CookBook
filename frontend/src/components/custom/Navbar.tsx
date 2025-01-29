@@ -44,12 +44,21 @@ export const Navbar: React.FC<NavbarProps> = ({ message }) => {
   const handleNavigate = () => {
     navigate(navigateUrl);
   };
+
+  const handleLoginNavigate = () => {
+    navigate("/login");
+  };
+
   const handleFavoriteNavigate = () => {
     navigate("/favorite-receipes");
   };
   const handleUserNavigate = () => {
     navigate("/user-receipes");
   };
+
+  const handleTextNavigate = () => {
+    navigate("/allreceipe")
+  }
 
   return (
     <Box
@@ -76,6 +85,8 @@ export const Navbar: React.FC<NavbarProps> = ({ message }) => {
             <Text
               fontSize="2xl"
               fontWeight="bold"
+              cursor={"pointer"}
+              onClick={handleTextNavigate}
               color={useColorModeValue('blue.500', 'blue.300')}
             >
               CookBook
@@ -96,7 +107,6 @@ export const Navbar: React.FC<NavbarProps> = ({ message }) => {
 
         <HStack>
           <Button
-            
             colorScheme="teal"
             onClick={handleNavigate}
           >
@@ -106,7 +116,6 @@ export const Navbar: React.FC<NavbarProps> = ({ message }) => {
           {user?.email ? (
             <>
               <Button
-                
                 colorScheme="pink"
                 onClick={handleFavoriteNavigate}
               >
@@ -114,7 +123,6 @@ export const Navbar: React.FC<NavbarProps> = ({ message }) => {
               </Button>
 
               <Button
-                
                 colorScheme="purple"
                 onClick={handleUserNavigate}
               >
@@ -132,7 +140,7 @@ export const Navbar: React.FC<NavbarProps> = ({ message }) => {
             <Button
               bg={useColorModeValue('blue.500', 'blue.300')}
               colorScheme="blue"
-              onClick={handleNavigate}
+              onClick={handleLoginNavigate}
             >
               Login
             </Button>
